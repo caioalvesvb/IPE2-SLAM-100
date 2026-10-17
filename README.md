@@ -45,6 +45,32 @@ resultado = gerar_planta("../SN_000055_certo", saida="planta.dxf", diagnosticos=
 print(resultado.resumo())
 ```
 
+## Duas rotas, dois níveis de detalhe
+
+O repositório traz dois pontos de entrada, que partem da mesma nuvem e param em
+lugares diferentes.
+
+| | [`planta_baixa.py`](planta_baixa.py) | [`planificar.py`](planificar.py) |
+|---|---|---|
+| Saída | Paredes com espessura, portas e janelas classificadas | Segmentos de face de parede |
+| Método | Vetorização por eixos + análise `(s,h)` de cada parede | Planificação (z = 0) + RANSAC de retas |
+| Vãos | Detectados e classificados (porta, janela, passagem, oclusão) | Aparecem como lacuna entre segmentos, sem classe |
+| Prédio fora de esquadro | Passe oblíquo, ou `--sem-manhattan` | Nativo: o RANSAC não supõe direção |
+| Quando usar | Entrega final em CAD | Conferência rápida, planta de apoio, prédio irregular |
+
+Medido na nuvem de ensaio, a rota de planificação devolve 35 segmentos, todos a
+menos de 5 cm de uma face real, com o perímetro errando 0,6 cm × 0,9 cm.
+
+```powershell
+python .\planificar.py nuvem.las --dxf planta.dxf --png conferencia.png --las-plano plano.las
+```
+
+`--las-plano` grava a própria nuvem planificada, útil para abrir no CloudCompare
+e ver o que o ajuste de retas enxergou. `--sem-filtro-moveis` desliga o descarte
+de mobiliário alto: na nuvem de ensaio isso faz os segmentos subirem de 35 para
+51 e o comprimento total de 145,7 m para 220,5 m — os 75 m a mais são armários
+traçados como parede.
+
 ## Como funciona
 
 Seis etapas, cada uma num módulo testável isoladamente.
