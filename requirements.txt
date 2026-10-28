@@ -6,3 +6,4 @@ laspy[lazrs]>=2.5
 ezdxf>=1.1
 matplotlib>=3.8
 pytest>=8.0
+scikit-image>=0.22
