@@ -261,7 +261,22 @@ def test_porta_fechada_vira_suspeita_e_nao_vao(deslocamento):
     suficiente para avisar, insuficiente para afirmar. O teste exige as duas
     coisas: que a suspeita apareca e que ela nao quebre a parede no desenho.
     """
-    com_porta = gerar_planta(sintetico.gerar(porta_fechada=True))
+    from plantabaixa.vaos import Limites
+
+    nuvem = sintetico.gerar(porta_fechada=True)
+    # Padrao: desligada. Numa parede real, reboco, quadro e tubulacao variam a
+    # profundidade na mesma ordem de grandeza do recuo de uma folha, e na nuvem
+    # do IME a busca rendeu 65 suspeitas sem nenhuma confirmavel - ruido
+    # suficiente para afogar o relatorio.
+    padrao = gerar_planta(nuvem)
+    assert not [v for v in padrao.vaos if v.classe == "porta_fechada?"], (
+        "a heuristica de porta fechada tem de vir desligada"
+    )
+
+    com_porta = gerar_planta(
+        nuvem,
+        parametros=Parametros(limites_vaos=Limites(detectar_porta_fechada=True)),
+    )
     gabarito = sintetico.PORTA_FECHADA
     parede_gabarito = next(p for p in sintetico.PAREDES if p.nome == gabarito.parede)
     parede = _parede_detectada(com_porta, deslocamento, parede_gabarito)

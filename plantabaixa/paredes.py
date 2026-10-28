@@ -570,7 +570,7 @@ def emparelhar(
     faces: list[Face],
     grade: Grade,
     espessura_min: float = 0.08,
-    espessura_max: float = 0.35,
+    espessura_max: float = 0.45,
     espessura_padrao: float = 0.15,
     sobreposicao_minima: float = 0.35,
 ) -> list[Parede]:
@@ -733,7 +733,7 @@ def extrair_paredes(
     min_parede: float = 0.40,
     tol_face: float = 0.04,
     tol_angulo: float = 12.0,
-    espessura_max: float = 0.35,
+    espessura_max: float = 0.45,
     espessura_padrao: float = 0.15,
     manhattan: bool = True,
     fechamento: int = 1,

@@ -85,6 +85,12 @@ class Limites:
     tolerancia_face: float = 0.045
     margem_nucleo: float = 0.030
     recuo_porta_fechada: tuple[float, float] = (0.02, 0.09)
+    # Desligada por padrao. Medida na nuvem real do IME, a busca por face
+    # recuada de 2 a 9 cm produziu 65 suspeitas e nenhuma confirmavel: numa
+    # parede de verdade, reboco, quadro, tubulacao e rodape variam a
+    # profundidade nessa mesma ordem de grandeza. A pista so e util em
+    # parede lisa, e quem a liga precisa saber disso.
+    detectar_porta_fechada: bool = False
 
 
 @dataclass
@@ -323,9 +329,12 @@ def analisar_parede(
             )
         )
 
-    for suspeita, recuo in _portas_fechadas(
-        parede, d, s, xyz[:, 2], material, s0, celula, limites
-    ):
+    suspeitas = (
+        _portas_fechadas(parede, d, s, xyz[:, 2], material, s0, celula, limites)
+        if limites.detectar_porta_fechada
+        else []
+    )
+    for suspeita, recuo in suspeitas:
         vaos.append(suspeita)
         avisos.append(
             f"{parede.nome}: possivel porta fechada em s = {suspeita.centro:.2f} m "

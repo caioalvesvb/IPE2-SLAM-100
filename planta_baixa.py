@@ -67,7 +67,7 @@ def construir_parser() -> argparse.ArgumentParser:
                        help="Tolerancia de distancia da celula ao plano da face, em metros.")
     grupo.add_argument("--tol-angulo", type=float, default=12.0,
                        help="Desvio angular tolerado para a celula pertencer a um eixo, em graus.")
-    grupo.add_argument("--espessura-max", type=float, default=0.35,
+    grupo.add_argument("--espessura-max", type=float, default=0.45,
                        help="Maior separacao entre faces aceita como uma mesma parede, em metros.")
     grupo.add_argument("--espessura-padrao", type=float, default=0.15,
                        help="Espessura adotada para parede vista de um lado so, em metros.")
@@ -87,6 +87,9 @@ def construir_parser() -> argparse.ArgumentParser:
                        metavar=("MIN", "MAX"), help="Faixa de peitoril de janela, em metros.")
     grupo.add_argument("--nucleo-minimo", type=int, default=15,
                        help="Pontos minimos dentro da espessura para o vao nao ser oclusao.")
+    grupo.add_argument("--porta-fechada", action="store_true",
+                       help="Procura indicio de porta fechada (face recuada). Rende muito "
+                            "falso positivo em parede com reboco irregular; use em parede lisa.")
 
     grupo = parser.add_argument_group("desenho")
     grupo.add_argument("--altura-corte", type=float, default=1.40,
@@ -129,6 +132,7 @@ def parametros_de(args: argparse.Namespace) -> Parametros:
             peitoril_minimo=args.peitoril[0],
             peitoril_maximo=args.peitoril[1],
             pontos_nucleo_minimos=args.nucleo_minimo,
+            detectar_porta_fechada=args.porta_fechada,
         ),
     )
 

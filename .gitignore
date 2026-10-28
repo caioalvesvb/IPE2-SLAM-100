@@ -32,3 +32,6 @@ SN_*/
 *.fmraster
 *.fmimr
 *.fmimu
+
+# Figuras de conferencia geradas na raiz pelo planificar.py
+conferencia*.png
